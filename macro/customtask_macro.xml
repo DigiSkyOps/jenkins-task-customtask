@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="customtask-macro">
+    <description>
+        this file provide some customtask macro defintion.
+    </description>
+
+    <!--
+         public interface.
+    -->
+    <macrodef name="customtask-macro">
+        <attribute name="type" default="" />
+        <attribute name="executable" />
+        <attribute name="execDir" />
+        <attribute name="execArgs" />
+        <attribute name="failonerror" default="false" />
+
+        <sequential>
+            <if>
+                <not>
+                    <available file="@{execDir}" type="dir" />
+                </not>
+                <then>
+                    <fail message="@{execDir} is not exists." />
+                </then>
+            </if>
+
+            <echo message="--// run @{executable} in (@{execDir}) ..." />
+
+            <!-- type: ant python command -->
+            <if>
+                <equals arg1="@{type}" arg2="ant" trim="true" />
+                <then>
+                    <ant antfile="@{executable}" inheritRefs="true" />
+                </then>
+                <elseif>
+                    <equals arg1="@{type}" arg2="python" trim="true" />
+                    <then>
+                        <exec executable="python" dir="@{execDir}" failonerror="true">
+                            <arg line="@{executable}" />
+                            <arg line="@{execArgs}" />
+                        </exec>
+                    </then>
+                </elseif>
+                <elseif>
+                    <equals arg1="@{type}" arg2="command" trim="true" />
+                    <then>
+                        <if>
+                            <isset property="os.windows" />
+                            <then>
+                                <exec executable="cmd.exe" dir="@{execDir}" failonerror="@{failonerror}">
+                                    <arg value="/c" />
+                                    <arg line="@{executable}" />
+                                    <arg line="@{execArgs}" />
+                                </exec>
+                            </then>
+                            <else>
+                                <exec executable="bash" dir="@{execDir}" failonerror="@{failonerror}">
+                                    <arg value="-c" />
+                                    <arg line="&quot;@{executable} @{execArgs}&quot;" />
+                                </exec>
+                            </else>
+                        </if>
+                    </then>
+                </elseif>
+                <else>
+                    <!-- by file ext -->
+                    <call-smart-task executable="@{executable}" execDir="@{execDir}" execArgs="@{execArgs}" failonerror="@{failonerror}" />
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="call-smart-task">
+        <attribute name="executable" />
+        <attribute name="execDir" />
+        <attribute name="execArgs" default=""/>
+        <attribute name="failonerror" default="false" />
+        <sequential>
+
+            <get-filename-info targetFile="@{executable}" fileExtProperty="exec.fileext" />
+
+            <if>
+                <or>
+                    <equals arg1="${exec.fileext}" arg2="cmd" trim="true" />
+                    <equals arg1="${exec.fileext}" arg2="bat" trim="true" />
+                </or>
+                <then>
+                    <exec executable="cmd.exe" dir="@{execDir}" failonerror="@{failonerror}">
+                        <arg value="/c" />
+                        <arg file="@{executable}" />
+                        <arg line="@{execArgs}" />
+                    </exec>
+                </then>
+                <elseif>
+                    <equals arg1="${exec.fileext}" arg2="sh" />
+                    <then>
+                        <exec executable="bash" dir="@{execDir}" failonerror="@{failonerror}">
+                            <arg file="@{executable}" />
+                            <arg line="@{execArgs}" />
+                        </exec>
+                    </then>
+                </elseif>
+                <elseif>
+                    <equals arg1="${exec.fileext}" arg2="xml" />
+                    <then>
+                        <if>
+                            <isset property="os.windows" />
+                            <then>
+                                <exec executable="cmd.exe" dir="@{execDir}" failonerror="@{failonerror}">
+                                    <arg value="/c" />
+                                    <arg value="ant.bat" />
+                                    <arg value="-f" />
+                                    <arg file="@{executable}" />
+                                    <arg line="@{execArgs}" />
+                                </exec>
+                            </then>
+                            <else>
+                                <exec executable="bash" dir="@{execDir}" failonerror="@{failonerror}">
+                                    <arg value="ant.bat" />
+                                    <arg value="-f" />
+                                    <arg file="@{executable}" />
+                                    <arg line="@{execArgs}" />
+                                </exec>
+                            </else>
+                        </if>
+                    </then>
+                </elseif>
+                <else>
+                    <fail message="--// your executable set error!" />
+                </else>
+            </if>
+
+        </sequential>
+    </macrodef>
+
+
+</project>

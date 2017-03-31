@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="customtask" default="customtask">
+
+    <!--
+    args:
+        exec.dir:
+        executable:
+        exec.args:
+        type: ant/python/command
+    -->
+    <dirname property="task.basedir" file="${ant.file.customtask}" />
+    <import file="${task.basedir}/macro/customtask_macro.xml" optional="true" />
+
+
+    <target name="customtask">
+        <property name="exec.dir" value="${ws.dir}" />
+        <property name="exec.args" value="" />
+        <property name="type" value="" />
+        <property name="failonerror" value="false" />
+
+        <echo>type: ${type}</echo>
+        <echo>dir: ${exec.dir}</echo>
+        <echo>${executable}</echo>
+        <echo>${exec.args}</echo>
+
+        <customtask-macro type="${type}"
+                          execDir="${exec.dir}"
+                          executable="${executable}"
+                          execArgs="${exec.args}"
+                          failonerror="${failonerror}"
+        />
+    </target>
+
+</project>
