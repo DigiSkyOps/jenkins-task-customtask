@@ -26,11 +26,11 @@
 
             <echo message="--// run @{executable} in (@{execDir}) ..." />
 
-            <!-- type: ant python command -->
+            <!-- type: ant/python/cmdline-->
             <if>
                 <equals arg1="@{type}" arg2="ant" trim="true" />
                 <then>
-                    <ant antfile="@{executable}" inheritRefs="true" />
+                  <ant antfile="@{executable}" inheritRefs="true" />
                 </then>
                 <elseif>
                     <equals arg1="@{type}" arg2="python" trim="true" />
@@ -42,7 +42,7 @@
                     </then>
                 </elseif>
                 <elseif>
-                    <equals arg1="@{type}" arg2="command" trim="true" />
+                    <equals arg1="@{type}" arg2="cmdline" trim="true" />
                     <then>
                         <if>
                             <isset property="os.windows" />
