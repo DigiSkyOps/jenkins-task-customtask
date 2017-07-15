@@ -16,7 +16,7 @@ stages:
       - task.id: opspkg
         artifact.id: ${meta.name}
         fileset.dir: ${ws.dir}
-        fileset.includes: *.xml,VERSION
+        fileset.includes: '*.xml,VERSION'
 
   - name: artifact
     tasks:
