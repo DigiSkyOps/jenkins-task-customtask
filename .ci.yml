@@ -1,0 +1,22 @@
+---
+version: '1.0'
+box: abs
+
+name: customtask
+
+# pipeline -> stage -> tasks
+
+stages:
+  - name: pkg
+    tasks:
+      - task.id: customtask
+        type: cmdline
+        workdir: ${ws.dir}
+        command: ./pkg.sh
+
+pipelines:
+  - name: dev
+    stages:
+      - pkg
+
+default: dev
