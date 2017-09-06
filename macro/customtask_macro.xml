@@ -116,7 +116,7 @@
                             </then>
                             <else>
                                 <exec executable="bash" dir="@{execDir}" failonerror="@{failonerror}">
-                                    <arg value="ant.bat" />
+                                    <arg value="ant" />
                                     <arg value="-f" />
                                     <arg file="@{executable}" />
                                     <arg line="@{execArgs}" />
