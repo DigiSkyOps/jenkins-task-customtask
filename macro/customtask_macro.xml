@@ -77,7 +77,7 @@
         <attribute name="failonerror" default="false" />
         <sequential>
 
-            <get-filename-info targetFile="@{executable}" fileExtProperty="exec.fileext" />
+            <getFilenameInfo targetFile="@{executable}" fileExtProperty="exec.fileext" />
 
             <if>
                 <or>
